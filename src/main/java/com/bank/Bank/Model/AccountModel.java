@@ -1,5 +1,6 @@
 package com.bank.Bank.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,10 +27,12 @@ public class AccountModel {
     @JoinColumn(name = "bank_id")
     private BankModel bankModel;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "account_type_id")
     private AccountTypeModel accountTypeModel;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private CustomerModel customerModel;
