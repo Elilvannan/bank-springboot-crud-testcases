@@ -17,5 +17,5 @@ public class BankModel {
     @Column(name = "name")
     private String name;
     @Column(name = "branch")
-    private String branch;
+        private String branch;
 }

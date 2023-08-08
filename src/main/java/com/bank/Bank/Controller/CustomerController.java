@@ -1,13 +1,15 @@
 package com.bank.Bank.Controller;
 
-import com.bank.Bank.Model.BankModel;
+import com.bank.Bank.Model.AccountModel;
 import com.bank.Bank.Model.CustomerModel;
+import com.bank.Bank.Repository.AccountRepository;
 import com.bank.Bank.Repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,14 +19,26 @@ public class CustomerController {
 
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
+
     @PostMapping("/save")
     public ResponseEntity<CustomerModel> save(@RequestBody CustomerModel customerModel){
-        CustomerModel customerModel1 =customerRepository.save(customerModel);
-        if(customerModel1!=null){
-            return new ResponseEntity<>(customerModel, HttpStatus.CREATED);
-        }else{
-            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        List<AccountModel> accountModelList =new ArrayList<>();
+        for (AccountModel accountModel1:customerModel.getAccountModelList()) {
+            accountRepository.save(accountModel1);
         }
+
+        customerRepository.save(customerModel);
+
+//
+//        System.out.println(customerRepository.findById(customerModel.getCustomerId()));
+//
+
+
+    return null;
+
     }
 
 
@@ -72,7 +86,7 @@ public class CustomerController {
             customerModel1.get().setAddress(customerModel.getAddress());
             customerModel1.get().setNic(customerModel.getNic());
             customerModel1.get().setPhone(customerModel.getPhone());
-            customerModel1.get().setBankModel(customerModel.getBankModel());
+//            customerModel1.get().setBankModel(customerModel.getBankModel());
 
 
             customerRepository.save(customerModel1.get());
