@@ -4,6 +4,8 @@ import com.bank.Bank.Model.AccountModel;
 import com.bank.Bank.Model.CustomerModel;
 import com.bank.Bank.Repository.AccountRepository;
 import com.bank.Bank.Repository.CustomerRepository;
+import com.bank.Bank.Service.AccountService;
+import com.bank.Bank.Service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,26 +20,16 @@ import java.util.Optional;
 public class CustomerController {
 
     @Autowired
-    CustomerRepository customerRepository;
+    CustomerService customerService;
 
     @Autowired
-    AccountRepository accountRepository;
+    AccountService accountService;
+
 
     @PostMapping("/save")
     public ResponseEntity<CustomerModel> save(@RequestBody CustomerModel customerModel){
-        List<AccountModel> accountModelList =new ArrayList<>();
-        for (AccountModel accountModel1:customerModel.getAccountModelList()) {
-            accountRepository.save(accountModel1);
-        }
 
-        customerRepository.save(customerModel);
-
-//
-//        System.out.println(customerRepository.findById(customerModel.getCustomerId()));
-//
-
-
-    return null;
+        return customerService.save(customerModel);
 
     }
 
@@ -45,58 +37,31 @@ public class CustomerController {
 
     @GetMapping("findall")
     public ResponseEntity<List<CustomerModel>> getAll(){
-        List<CustomerModel> customerModels  = customerRepository.findAll();
-        if (customerModels.isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else {
-            return new ResponseEntity<>(customerModels,HttpStatus.FOUND);
-        }
+        return customerService.findAll();
     }
 
     @GetMapping("/findbyid/{id}")
     public ResponseEntity<CustomerModel> getById(@PathVariable long id){
-        Optional<CustomerModel> customerModel  = customerRepository.findById(id);
-        if (customerModel.isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity<>(customerRepository.findById(id).get(),HttpStatus.FOUND);
-        }
+       return customerService.findById(id);
     }
 
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<CustomerModel> deleteById(@PathVariable long id) {
-        if (customerRepository.findById(id).isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
-            customerRepository.deleteById(id);
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
+
+        return customerService.deleteById(id);
     }
 
 
 
     @PutMapping("update/{id}")
     public ResponseEntity<CustomerModel> update(@PathVariable long id, @RequestBody CustomerModel customerModel){
-        if (customerRepository.findById(id).isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else{
-            Optional<CustomerModel> customerModel1  =customerRepository.findById(id);
-            customerModel1.get().setName(customerModel.getName());
-            customerModel1.get().setAddress(customerModel.getAddress());
-            customerModel1.get().setNic(customerModel.getNic());
-            customerModel1.get().setPhone(customerModel.getPhone());
-//            customerModel1.get().setBankModel(customerModel.getBankModel());
 
-
-            customerRepository.save(customerModel1.get());
-            return new ResponseEntity<>(customerModel1.get(),HttpStatus.ACCEPTED);
-        }
+        return customerService.update(id,customerModel);
     }
 
 
-
-
+    
 
 
 

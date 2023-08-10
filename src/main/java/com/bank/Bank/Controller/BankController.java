@@ -2,6 +2,7 @@ package com.bank.Bank.Controller;
 
 import com.bank.Bank.Model.BankModel;
 import com.bank.Bank.Repository.BankRepository;
+import com.bank.Bank.Service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,61 +19,45 @@ import static java.util.Optional.empty;
 public class BankController {
     @Autowired
     BankRepository bankRepository;
+    @Autowired
+    BankService bankService;
 @PostMapping("/save")
     public ResponseEntity<BankModel> createBank(@RequestBody BankModel bankModel){
-           BankModel bankModel1 =bankRepository.save(bankModel);
-        if(bankModel1!=null){
-            return new ResponseEntity<>(bankModel1,HttpStatus.CREATED);
-        }else{
-            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-        }
+           ResponseEntity<BankModel> bankModel1 =bankService.save(bankModel);
+        return new ResponseEntity<>(bankModel1.getBody(),bankModel1.getStatusCode());
     }
 
  @GetMapping("findall")
     public ResponseEntity<List<BankModel>> getAll(){
-     List<BankModel> bankModelList = bankRepository.findAll();
-     if (bankModelList.isEmpty()){
-         return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-     }else {
-         return new ResponseEntity<>(bankModelList,HttpStatus.FOUND);
-     }
+    return bankService.findAll();
  }
 
 @GetMapping("/findbyid/{id}")
     public ResponseEntity<BankModel> getById(@PathVariable long id){
-        Optional<BankModel> bankModel = bankRepository.findById(id);
-        if (bankModel.isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity<>(bankRepository.findById(id).get(),HttpStatus.FOUND);
-
-        }
+        return bankService.findById(id);
     }
 
 
 
 @DeleteMapping("/delete/{id}")
     public ResponseEntity<BankModel> deleteById(@PathVariable long id) {
-    if (bankRepository.findById(id).isEmpty()) {
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
-        bankRepository.deleteById(id);
-        return new ResponseEntity<>(null, HttpStatus.OK);
-        }
+
+    return bankService.deleteById(id);
     }
 
 
 @PutMapping("update/{id}")
 public ResponseEntity<BankModel> update(@PathVariable long id, @RequestBody BankModel bankModel){
-    if (bankRepository.findById(id).isEmpty()){
-        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-    }else{
-        Optional<BankModel> bankModel1 =bankRepository.findById(id);
-        bankModel1.get().setName(bankModel.getName());
-        bankModel1.get().setBranch(bankModel.getBranch());
-        bankRepository.save(bankModel1.get());
-        return new ResponseEntity<>(bankModel1.get(),HttpStatus.ACCEPTED);
-    }
+//    if (bankService.findById(id).isEmpty()){
+//        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+//    }else{
+//        Optional<BankModel> bankModel1 =bankService.findById(id);
+//        bankModel1.get().setName(bankModel.getName());
+//        bankModel1.get().setBranch(bankModel.getBranch());
+//        bankService.save(bankModel1.get());
+//        return new ResponseEntity<>(bankModel1.get(),HttpStatus.ACCEPTED);
+//    }
+    return bankService.update(id,bankModel);
 }
 
 

@@ -33,6 +33,6 @@ public class AccountModel {
 
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", referencedColumnName = "customerId")
     private CustomerModel customerModel;
 }

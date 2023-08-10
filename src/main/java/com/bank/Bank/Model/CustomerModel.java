@@ -1,5 +1,7 @@
 package com.bank.Bank.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,8 +30,10 @@ public class CustomerModel {
     @Column(name = "phone")
     private Integer phone;
 
-    @OneToMany(mappedBy = "customerModel")
+    @JsonBackReference
+    @OneToMany(mappedBy = "customerModel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<AccountModel> accountModelList;
+
 
     @ManyToOne
     @JoinColumn(name = "bank_id")
