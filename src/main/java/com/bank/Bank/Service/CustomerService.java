@@ -25,18 +25,18 @@ public class CustomerService {
     AccountRepository accountRepository;
 
     public ResponseEntity<CustomerModel> save(CustomerModel customerModel) {
-        List<AccountModel> accountModelList = new ArrayList<>();
+
 
         CustomerModel customerModel1 = customerRepository.save(customerModel);
 
-        System.out.println(customerModel1);
 
-        for (AccountModel accountModel : accountModelList
+        for (AccountModel accountModel : customerModel.getAccountModelList()
         ) {
             accountModel.setCustomerModel(customerModel1);
             accountRepository.save(accountModel);
         }
         return new ResponseEntity<>(customerModel1, HttpStatus.CREATED);
+
     }
 
 
