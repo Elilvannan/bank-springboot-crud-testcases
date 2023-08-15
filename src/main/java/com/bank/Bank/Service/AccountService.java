@@ -17,46 +17,51 @@ public class AccountService {
     AccountRepository accountRepository;
 
     public ResponseEntity<AccountModel> save(AccountModel accountModel){
-        AccountModel accountModel1 =accountRepository.save(accountModel);
-        if(accountModel1!=null){
+        try {
+            AccountModel accountModel1 =accountRepository.save(accountModel);
             return new ResponseEntity<>(accountModel, HttpStatus.CREATED);
-        }else{
+        } catch (Exception e){
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+
         }
+
     }
 
 
     public ResponseEntity<List<AccountModel>> findAll(){
-        List<AccountModel> accountModels  = accountRepository.findAll();
-        if (accountModels.isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else {
+        try {
+            List<AccountModel> accountModels  = accountRepository.findAll();
             return new ResponseEntity<>(accountModels,HttpStatus.FOUND);
+
+        }catch (Exception e){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+
         }
     }
 
     public ResponseEntity<AccountModel> findById(long id){
-        Optional<AccountModel> accountModel  = accountRepository.findById(id);
-        if (accountModel.isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity<>(accountRepository.findById(id).get(),HttpStatus.FOUND);
-        }
 
+        try {
+            Optional<AccountModel> accountModel  = accountRepository.findById(id);
+            return new ResponseEntity<>(accountRepository.findById(id).get(),HttpStatus.FOUND);
+        }catch ( Exception e){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
     }
     public ResponseEntity<AccountModel> deleteById(long id){
-        if (accountRepository.findById(id).isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
-            accountRepository.deleteById(id);
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
+       try {
+           accountRepository.findById(id);
+           accountRepository.deleteById(id);
+           return new ResponseEntity<>(null, HttpStatus.OK);
+       }catch ( Exception e){
+
+           return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+       }
     }
 
     public ResponseEntity<AccountModel> update(long id,AccountModel accountModel){
-                if (accountRepository.findById(id).isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else{
+        try {
+            accountRepository.findById(id);
             Optional<AccountModel> accountModel1  =accountRepository.findById(id);
             accountModel1.get().setBalance(accountModel.getBalance());
             accountModel1.get().setOpenDate(accountModel.getOpenDate());
@@ -64,9 +69,11 @@ public class AccountService {
             accountModel1.get().setAccountTypeModel(accountModel.getAccountTypeModel());
             accountModel1.get().setCustomerModel(accountModel.getCustomerModel());
 
-
             accountRepository.save(accountModel1.get());
             return new ResponseEntity<>(accountModel1.get(),HttpStatus.ACCEPTED);
+        }catch ( Exception e){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+
         }
     }
 

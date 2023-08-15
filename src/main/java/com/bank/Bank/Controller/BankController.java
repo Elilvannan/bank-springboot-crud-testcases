@@ -41,24 +41,12 @@ public class BankController {
 
 @DeleteMapping("/delete/{id}")
     public ResponseEntity<BankModel> deleteById(@PathVariable long id) {
-
-    return bankService.deleteById(id);
-    }
+        return bankService.deleteById(id);
+}
 
 
 @PutMapping("update/{id}")
 public ResponseEntity<BankModel> update(@PathVariable long id, @RequestBody BankModel bankModel){
-//    if (bankService.findById(id).isEmpty()){
-//        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-//    }else{
-//        Optional<BankModel> bankModel1 =bankService.findById(id);
-//        bankModel1.get().setName(bankModel.getName());
-//        bankModel1.get().setBranch(bankModel.getBranch());
-//        bankService.save(bankModel1.get());
-//        return new ResponseEntity<>(bankModel1.get(),HttpStatus.ACCEPTED);
-//    }
     return bankService.update(id,bankModel);
 }
-
-
 }

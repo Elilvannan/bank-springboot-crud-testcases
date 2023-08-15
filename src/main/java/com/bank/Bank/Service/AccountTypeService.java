@@ -22,7 +22,7 @@ public ResponseEntity<AccountTypeModel> save(AccountTypeModel accountModel){
         AccountTypeModel saveAccountTypeModel = accountTypeRepository.save(accountModel);
         return new ResponseEntity<>(saveAccountTypeModel, HttpStatus.CREATED);
     } catch (Exception e) {
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(null, HttpStatus.METHOD_NOT_ALLOWED);
     }
 }
 
@@ -38,36 +38,35 @@ public ResponseEntity<List<AccountTypeModel>> findAll(){
 }
 
 public ResponseEntity<AccountTypeModel> findById(long id){
-    if (accountTypeRepository.findById(id).isEmpty()){
-        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-    }
-    else{
+    try {
+        accountTypeRepository.findById(id);
         return new ResponseEntity<>(accountTypeRepository.findById(id).get(), HttpStatus.FOUND);
-    }
 
+    }catch (Exception e){
+        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+           }
 }
 
 public ResponseEntity<AccountTypeModel> deleteById(long id){
-    if (accountTypeRepository.findById(id).isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
-            accountTypeRepository.deleteById(id);
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-
+    try {
+        accountTypeRepository.findById(id);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }catch (Exception e){
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
 }
 
 public ResponseEntity<AccountTypeModel> update(long id, AccountTypeModel accountTypeModel){
-        if (accountTypeRepository.findById(id).isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else{
+        try {
             AccountTypeModel accountTypeModel1 =accountTypeRepository.findById(id).get();
             accountTypeModel1.setAccountType(accountTypeModel.getAccountType());
             accountTypeModel1.setDescription(accountTypeModel.getDescription());
             accountTypeModel1.setInterestRate(accountTypeModel.getInterestRate());
             accountTypeRepository.save(accountTypeModel1);
             return new ResponseEntity<>(accountTypeModel1,HttpStatus.ACCEPTED);
+        }catch (Exception e){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
-}
+        }
 
 }

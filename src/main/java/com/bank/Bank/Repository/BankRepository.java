@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface BankRepository extends JpaRepository<BankModel, Long> {
-    BankModel save(BankModel bankModel);
+
 }

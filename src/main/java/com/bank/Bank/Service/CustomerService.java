@@ -26,66 +26,64 @@ public class CustomerService {
 
     public ResponseEntity<CustomerModel> save(CustomerModel customerModel) {
 
-
-        CustomerModel customerModel1 = customerRepository.save(customerModel);
-
-
-        for (AccountModel accountModel : customerModel.getAccountModelList()
-        ) {
-            accountModel.setCustomerModel(customerModel1);
-            accountRepository.save(accountModel);
+        try {
+            CustomerModel customerModel1 = customerRepository.save(customerModel);
+            for (AccountModel accountModel : customerModel.getAccountModelList()
+            ) {
+                accountModel.setCustomerModel(customerModel1);
+                accountRepository.save(accountModel);
+            }
+            return new ResponseEntity<>(customerModel1, HttpStatus.CREATED);
+        }catch ( Exception e){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(customerModel1, HttpStatus.CREATED);
 
     }
 
 
     public ResponseEntity<List<CustomerModel>> findAll() {
-        List<CustomerModel> customerModels = customerRepository.findAll();
-        if (customerModels.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(customerModels, HttpStatus.FOUND);
-        }
-
+       try {
+           List<CustomerModel> customerModels = customerRepository.findAll();
+           return new ResponseEntity<>(customerModels, HttpStatus.FOUND);
+       }catch ( Exception e){
+           return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+       }
     }
 
     public ResponseEntity<CustomerModel> findById(long id) {
-        Optional<CustomerModel> customerModel = customerRepository.findById(id);
-        if (customerModel.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(customerRepository.findById(id).get(), HttpStatus.FOUND);
-        }
+       try {
+           Optional<CustomerModel> customerModel = customerRepository.findById(id);
+           return new ResponseEntity<>(customerRepository.findById(id).get(), HttpStatus.FOUND);
+       }catch ( Exception e){
+           return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+       }
     }
 
     public ResponseEntity<CustomerModel> deleteById(long id) {
-
-        if (customerRepository.findById(id).isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
+        try {
             Optional<CustomerModel> customerModel = customerRepository.findById(id);
             List<AccountModel> accountModelList;
             accountModelList = accountRepository.findAllBycustomerModel(customerModel.get());
             accountRepository.deleteAll(accountModelList);
             customerRepository.deleteById(id);
             return new ResponseEntity<>(null, HttpStatus.OK);
+        }catch ( Exception e){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
     public ResponseEntity<CustomerModel> update( long id,  CustomerModel customerModel){
-        if (customerRepository.findById(id).isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else{
+        try {
             Optional<CustomerModel> customerModel1  =customerRepository.findById(id);
             customerModel1.get().setName(customerModel.getName());
             customerModel1.get().setAddress(customerModel.getAddress());
             customerModel1.get().setNic(customerModel.getNic());
             customerModel1.get().setPhone(customerModel.getPhone());
             customerModel1.get().setBankModel(customerModel.getBankModel());
-
-
             customerRepository.save(customerModel1.get());
             return new ResponseEntity<>(customerModel1.get(),HttpStatus.ACCEPTED);
+
+        }catch ( Exception e){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
     }
 }

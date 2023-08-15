@@ -44,7 +44,6 @@ public class AccountTypeController {
 
     @PutMapping("update/{id}")
     public ResponseEntity<AccountTypeModel> update(@PathVariable long id,@RequestBody AccountTypeModel accountTypeModel){
-
         return accountTypeService.update(id,accountTypeModel);
     }
 }
